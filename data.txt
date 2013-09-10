@@ -1,0 +1,2218 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><!--
+v 11.1.0043.0
+s C0-8E-46-00-DB-7A-C8-75-A5-7B-50-C7-7F-90-B1-F7
+r 31-57-F8-4B-3A-93-F4-49-AF-6A-33-F6-D9-6F-96-9C
+-->
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="/Shell/js/shiny.js"></script>
+    <script type="text/javascript" src="/Shell/js/general.js"></script>
+    <script type="text/javascript">try{var utcOffsetMinutes = new Date().getTimezoneOffset() * -1;setCookie("UtcOffsetMinutes", utcOffsetMinutes, 30);} catch (e){}</script>
+    <link rel="Stylesheet" type="text/css" href="/Shell/css/GridLayout.css" /><link rel="Stylesheet" type="text/css" href="/Shell/css/XboxV3.css" /><link rel="Stylesheet" type="text/css" href="/Shell/css/ShellStyles.css" /><link rel="Stylesheet" type="text/css" href="/Shell/css/jquery-ui-theme.css" /><link rel="shortcut icon" href="/Shell/images/favicon.ico" />
+    
+    
+    <link type="text/css" rel="Stylesheet" href="/Content/css/FriendCenter.css" />
+    
+<script type="text/javascript" language="javascript">
+//<![CDATA[
+    function FriendCenterObject() {
+        var fcAction = function(actionUrl, gamerTag, responseHandler) {
+            responseHandler = responseHandler || function(response) {
+                if (response.status != 0) {
+                    DisplayMessageDialog('Error', response.view, 'Close', null, MessageLevelType.Error);
+                }
+                else {
+                    DisplayMessageDialog('Message', response.view, 'Close', FriendCenter.RefreshContentAction);
+                }
+            }
+
+            $.post(actionUrl, { 'gamerTag': gamerTag }, responseHandler);
+        };
+
+        this.FindAFriend = function(gamerTag) {
+            $.post('/en-US/FriendCenter/FindAFriend', { 'gamerTag': gamerTag },
+                function(response) {
+                    if (response.status == 0) {
+                        if (response.profileUrl) {
+                            window.location.href = response.profileUrl;
+                        }
+                    }
+                    else
+                    {
+                        DisplayMessageDialog('Error', response.view, 'Close', null, MessageLevelType.Error);
+                    }
+                });
+            return false;
+        };
+
+        this.AcceptFriendRequest = function(gamerTag) {
+            fcAction('/en-US/FriendCenter/AcceptFriendRequest', gamerTag);
+            return false;
+        };
+
+        this.DeclineFriendRequest = function(gamerTag) {
+            DisplayConfirmationDialog(
+                'Decline Friend Request',
+                'Are you sure you want to decline the friend request?',
+                'Yes',
+                'No',
+                function() {
+                    fcAction('/en-US/FriendCenter/DeclineFriendRequest', gamerTag);
+                }, null, '', MessageLevelType.Warning);
+            return false;
+        };
+
+        this.CancelFriendRequest = function(gamerTag) {
+            DisplayConfirmationDialog(
+                'Cancel Pending Request',
+                'Are you sure you want to cancel your pending friend request?',
+                'Yes',
+                'No',
+                function() {
+                    fcAction('/en-US/FriendCenter/CancelFriendRequest', gamerTag);
+                }, null, '', MessageLevelType.Warning);
+            return false;
+        };
+
+        this.AddFriend = function(gamerTag) {
+            gamerTag = $.trim(gamerTag); // trim leading and trailing whitespaces
+            if (gamerTag != "") {
+                fcAction('/en-US/FriendCenter/SendFriendRequest', gamerTag);
+            }
+            return false;
+        };
+
+        this.RemoveFriend = function(gamerTag) {
+            DisplayConfirmationDialog(
+                'Remove',
+                'Are you sure you want to remove this player from your friends list?',
+                'Yes',
+                'No',
+                function() {
+                    fcAction('/en-US/FriendCenter/RemoveFriend', gamerTag);
+                }, null, '', MessageLevelType.Warning);
+            return false;
+        };
+
+        this.BlockFriend = function(gamerTag) {
+            DisplayConfirmationDialog(
+                'Block User',
+                'Are you sure you want to block this player from all further communications?',
+                'Yes',
+                'No',
+                function() {
+                    fcAction('/en-US/FriendCenter/BlockFriend', gamerTag);
+                }, null, '', MessageLevelType.Warning);
+            return false;
+        };
+        
+        this.RefreshContentAction = function(){};
+    };
+    var FriendCenter = new FriendCenterObject();
+//]]>
+</script>
+
+    <link rel="Stylesheet" type="text/css" href="/Content/css/General.css" />
+    <script type="text/javascript" src="/Content/js/MyXbox.js"></script>
+
+<title>
+	Recent Players - Xbox.com
+</title></head>
+<body id="ctl00_ctl00_ctl00_DocumentBody">
+    
+    <div id="bodycolumn">
+        
+    
+
+        <div id="BodyHeader" class="container">
+            
+
+<div id="ShellHeaderContent">
+    <div id="ShellLinkArea">
+        <div class="SearchArea">
+            <select id="SearchContext">
+                <option value="http://live.xbox.com:80/en-US/SiteSearch/Search?q={0}" selected="">Search Site</option><option value="http://marketplace.xbox.com:80/en-US/Search?query={0}">Search Games + Marketplace</option><option value="http://support.xbox.com:80/en-US/pages/results.aspx?k={0}">Search Support</option>
+            </select>
+            <input id="SearchTextBox" type="text" name="q" class="TextBox" value="" url="http://live.xbox.com:80/en-US/SiteSearch/Search?q={0}" maxlength="200" />
+            <input id="SearchButton" type="button" class="SubmitButton" value="" title="Search Site" />
+        </div>
+        <div class="Links">
+            <a href="/Shell/ChangeLocale.aspx" id="ctl00_ctl00_ctl00_MainContent__headerControl_ChangeCultureLink" name="ChangeCultureLink">United States</a> 
+            &#8226;
+            <a href="http://support.xbox.com" id="ctl00_ctl00_ctl00_MainContent__headerControl_SupportLink" name="HeaderSupportLink">Support</a> 
+        </div>
+        <br clear="all" />
+    </div>
+        <span id="XbcPointsBalanceShell"></span>
+        <div id="ShellMeBarArea">
+            <a href="http://www.xbox.com:80/" id="ctl00_ctl00_ctl00_MainContent__headerControl_HomeLink" name="HeaderLogoHomeLink"><div id="ShellLogo"></div></a>
+            
+            <div id="ctl00_ctl00_ctl00_MainContent__headerControl_SignedInExperience">
+	
+                <div id="HeadShotBox" class="SignedIn">
+                    <a><div class="avatarHeadshot" name="MeBarAvatar"></div></a>
+                </div>
+                <div id="ShellMeBar" class="SignedIn">
+                    <div id="GamerStatArea" class="GamerStatArea">                        
+                        <h1 class="gamertag" name="MeBarGamerTag" id="gamertag">Loading...</h1>
+                        <div class="Stats">
+                            <a id="notifications"><div class="notifications" style="display:none" name="MeBarNotificationCount"></div></a>  
+                            <a id="messages"><div class="messages" style="display:none" name="MeBarMessageCount"></div></a>
+                            <a id="gamerscore"><div class="gamerscore" style="display:none" name="MeBarGamerScore"></div></a>
+                        </div>
+                    </div>
+                    <div class="LinkArea">
+                        <span id="AdditionalLinks" class="AdditionalLinks">
+                            <span class="nowrap" name="MeBarTier" id="tier"></span>
+                            <span class="nowrap" id="ShellSubscriptionNotificationArea"></span>
+                            <span class="spread nowrap" name="PointsBalance" id="points"></span>
+                        </span>
+                        <span class="spread"><a href="http://login.live.com/logout.srf?ct=1296887846&amp;rver=6.0.5286.0&amp;lc=1033&amp;id=66262&amp;ru=http:%2F%2Flive.xbox.com%2Fen-US%2Fdefault.aspx" id="ctl00_ctl00_ctl00_MainContent__headerControl_RpsSignOutLink" name="RpsSignInLink">Sign Out</a></span>
+                    </div>
+                </div>
+                <script language="javascript" type="text/javascript" >
+                //<![CDATA[        
+                    function LoadHeaderMeBar()
+                    {
+                        var dataScriptTag = "<script src=\"" + "http://live.xbox.com:80/Handlers/ShellData.ashx?culture=en-US" + "&XBXMChg=" + getCookie("XBXMChg") + "&XBXNChg=" + getCookie("XBXNChg") + "&XBXSPChg=" + getCookie("XBXSPChg") + "&XBXChg=" + getCookie("XBXChg") + "\" language=\"javascript\" type=\"text/javascript\"></scr" + "ipt>";
+                        var subDataScriptTag = "<script src=\"" + "http://live.xbox.com:80/Handlers/ShellSubscriptionNotification.ashx?culture=en-US" + "&XBXSubChg=" + getCookie("XBXSubChg") + "\" language=\"javascript\" type=\"text/javascript\"></scr" + "ipt>";
+                        
+                        $("#MeBarDataLoader").html(dataScriptTag);
+                        $("#MeBarSubDataLoader").html(subDataScriptTag);
+                    };
+                    $(document).ready(LoadHeaderMeBar);
+                 //]]>
+                 </script>
+                 <div id="MeBarDataLoader"></div>
+                 <div id="MeBarSubDataLoader"></div>
+            
+</div>
+        </div>
+    
+    <div id="ShellNavigationBar">
+        <a href="http://www.xbox.com:80/en-US/kinect" id="ctl00_ctl00_ctl00_MainContent__headerControl_CalloutNavigationLink" class="CalloutNavigation">KINECT</a>
+        <ul class="NavigationElements">
+            <li><a href="http://www.xbox.com:80/en-US/xbox360?xr=shellnav" name="en_US_1">Xbox 360 + Accessories</a><ul><li><a href="http://www.xbox.com:80/en-US/xbox360/consoles?xr=shellnav" name="en_US_1_0">Consoles</a></li><li><a href="http://www.xbox.com:80/en-US/xbox360/accessories?xr=shellnav" name="en_US_1_1">Accessories</a></li><li><a href="http://www.xbox.com:80/en-US/xbox360/wheretobuy?xr=shellnav" name="en_US_1_2">Where to Buy</a></li></ul></li><li><a href="http://www.xbox.com:80/en-US/live?xr=shellnav" name="en_US_2">Xbox LIVE</a><ul><li><a href="http://www.xbox.com:80/en-US/live/joinlive?xr=shellnav" name="en_US_2_0">Join Xbox LIVE</a></li></ul></li><li><a href="http://marketplace.xbox.com:80/en-US/?xr=shellnav" name="en_US_3">Games + Marketplace</a><ul><li><a href="http://marketplace.xbox.com:80/en-US/Games/All?xr=shellnav" name="en_US_3_0">Games</a></li><li><a href="http://marketplace.xbox.com:80/en-US/Games/AllDownloads?xr=shellnav" name="en_US_3_1">Downloads</a></li><li><a href="http://marketplace.xbox.com:80/en-US/AvatarMarketplace?xr=shellnav" name="en_US_3_2">Avatars</a></li></ul></li><li><a href="http://www.xbox.com:80/en-US/community?xr=shellnav" name="en_US_4">Community</a><ul><li><a href="http://www.xbox.com:80/en-US/community/events?xr=shellnav" name="en_US_4_0">Events Calendar</a></li><li><a href="http://www.xbox.com:80/en-US/community/gamerspotlight?xr=shellnav" name="en_US_4_1">Gamer Spotlight</a></li><li><a href="http://www.xbox.com:80/en-US/community/insidexbox?xr=shellnav" name="en_US_4_2">Inside Xbox</a></li><li><a href="http://www.xbox.com:80/en-US/forums?xr=shellnav" name="en_US_4_3">Forums</a></li><li><a href="http://www.xbox.com:80/en-US/community/xbox101?xr=shellnav" name="en_US_4_4">Xbox 101</a></li></ul></li><li><a href="http://live.xbox.com:80/en-US/default.aspx?xr=shellnav" name="en_US_5">My Xbox</a><ul><li><a href="http://live.xbox.com:80/en-US/friendcenter?xr=shellnav" name="en_US_5_0">Friends</a></li><li><a href="http://live.xbox.com:80/en-US/messagecenter?xr=shellnav" name="en_US_5_1">Messages</a></li><li><a href="http://live.xbox.com:80/en-US/gamecenter?xr=shellnav" name="en_US_5_2">Games</a></li><li><a href="http://live.xbox.com:80/en-US/AvatarEditor?xr=shellnav" name="en_US_5_3">Avatar Editor</a></li><li><a href="http://live.xbox.com:80/en-US/familycenter?xr=shellnav" name="en_US_5_4">Family Center</a></li><li><a href="http://live.xbox.com:80/en-US/account?xr=shellnav" name="en_US_5_5">Accounts</a></li><li><a href="https://live.xbox.com:443/en-US/RedeemToken?xr=shellnav" name="en_US_5_6">Redeem Code</a></li></ul></li>
+        </ul>
+    </div>
+    
+    <div id="ShellBreadcrumbs">
+        <a href="http://www.xbox.com:80/">Home</a> &gt; <a href="/en-US/MyXbox">My Xbox</a> &gt; <a href="/en-US/FriendCenter">Friend Center</a> &gt; Recent Players
+    </div>
+    <script language="javascript" type="text/javascript" >
+    //<![CDATA[        
+        $(document).ready(function(){CreateDropdownMenus('#ShellNavigationBar > ul.NavigationElements > li');});
+        $(document).ready(function(){
+            var usedWidth = 0
+            $("#ShellNavigationBar ul.NavigationElements > li").each(function(){ usedWidth += $(this).width();});
+            var availableWidth = $("#ShellNavigationBar").width() - $("#ShellNavigationBar .CalloutNavigation").width() - usedWidth;
+            var numElements = $("#ShellNavigationBar ul.NavigationElements > li").length;
+            var paddingAddition = availableWidth / (numElements * 2);
+            paddingAddition = paddingAddition - 1; /* play it safe */
+            if (paddingAddition > 0)
+            {
+                $("#ShellNavigationBar ul.NavigationElements > li").css("margin-left",paddingAddition + "px").css("margin-right",paddingAddition + "px")
+            }
+        });
+        
+        function XbcShellAddPoints()
+{
+  window.location = 'https://live.xbox.com:443/en-US/Flows/BeginFlow.ashx?workflow=BuyPoints&ru=' + encodeURIComponent(window.location) + '&aru=' + encodeURIComponent(window.location);
+}
+
+        
+        $(document).ready(function() {
+            $('#SearchTextBox')
+                .keypress( function(event) {
+                    if(event.keyCode==13) {
+                        showSearchResults();
+                        return false;
+                    }
+                });
+            $('#SearchButton')
+                .click( function() {
+                    showSearchResults();
+                });
+        });
+    //]]>
+    </script>
+    
+</div>
+        </div>
+        <div id="BodyContent" class="container">
+            
+    
+    <div id="fc-main">
+        <h1 id="fc-header" class="fc-title">
+            Recent Players&#32;
+        </h1>
+        <div id="fc-content" class="grid-24 lastgridchild">
+            
+<dl id="fc-notyet">
+    <dt class="section-header">
+        <span>Not Yet Friends (50)</span>
+    </dt>
+    
+<dd id="fc-gtag-XxLadySlipknot" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/XxLadySlipknot/avatarpic-l.png" alt="XxLadySlipknot"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=XxLadySlipknot'>XxLadySlipknot</a>
+            <div class="fc-gscore-icon">15439</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('XxLadySlipknot'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=XxLadySlipknot">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=XxLadySlipknot">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=XxLadySlipknot">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('XxLadySlipknot');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Smi1e 4my Sc0pe" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Smi1e%204my%20Sc0pe/avatarpic-l.png" alt="Smi1e 4my Sc0pe"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Smi1e%204my%20Sc0pe'>Smi1e 4my Sc0pe</a>
+            <div class="fc-gscore-icon">7975</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Smi1e 4my Sc0pe'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Smi1e%204my%20Sc0pe">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Smi1e%204my%20Sc0pe">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Smi1e%204my%20Sc0pe">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Smi1e 4my Sc0pe');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-KSI Blk Ghost 7" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/KSI%20Blk%20Ghost%207/avatarpic-l.png" alt="KSI Blk Ghost 7"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=KSI%20Blk%20Ghost%207'>KSI Blk Ghost 7</a>
+            <div class="fc-gscore-icon">9706</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('KSI Blk Ghost 7'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=KSI%20Blk%20Ghost%207">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=KSI%20Blk%20Ghost%207">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=KSI%20Blk%20Ghost%207">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('KSI Blk Ghost 7');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-JoeBreezyy" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20006" alt="JoeBreezyy"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=JoeBreezyy'>JoeBreezyy</a>
+            <div class="fc-gscore-icon">260</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('JoeBreezyy'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=JoeBreezyy">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=JoeBreezyy">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=JoeBreezyy">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('JoeBreezyy');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Idle Handz" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.58410901/tile/0/20010" alt="Idle Handz"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Idle%20Handz'>Idle Handz</a>
+            <div class="fc-gscore-icon">3705</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Idle Handz'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Idle%20Handz">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Idle%20Handz">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Idle%20Handz">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Idle Handz');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Christ Deformed" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Christ%20Deformed/avatarpic-l.png" alt="Christ Deformed"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Christ%20Deformed'>Christ Deformed</a>
+            <div class="fc-gscore-icon">3323</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Christ Deformed'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Christ%20Deformed">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Christ%20Deformed">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Christ%20Deformed">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Christ Deformed');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-HOLLYWOOD BLADE" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/21016" alt="HOLLYWOOD BLADE"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=HOLLYWOOD%20BLADE'>HOLLYWOOD BLADE</a>
+            <div class="fc-gscore-icon">4095</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('HOLLYWOOD BLADE'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=HOLLYWOOD%20BLADE">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=HOLLYWOOD%20BLADE">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=HOLLYWOOD%20BLADE">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('HOLLYWOOD BLADE');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-illrational" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/illrational/avatarpic-l.png" alt="illrational"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=illrational'>illrational</a>
+            <div class="fc-gscore-icon">1858</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('illrational'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=illrational">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=illrational">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=illrational">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('illrational');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Ven0m Princess" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Ven0m%20Princess/avatarpic-l.png" alt="Ven0m Princess"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Ven0m%20Princess'>Ven0m Princess</a>
+            <div class="fc-gscore-icon">10448</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Ven0m Princess'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Ven0m%20Princess">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Ven0m%20Princess">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Ven0m%20Princess">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Ven0m Princess');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-ITAL STAL 61" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20001" alt="ITAL STAL 61"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=ITAL%20STAL%2061'>ITAL STAL 61</a>
+            <div class="fc-gscore-icon">1010</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('ITAL STAL 61'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=ITAL%20STAL%2061">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=ITAL%20STAL%2061">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=ITAL%20STAL%2061">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('ITAL STAL 61');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-JesusorausRex" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.425307d5/tile/0/28000" alt="JesusorausRex"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=JesusorausRex'>JesusorausRex</a>
+            <div class="fc-gscore-icon">3570</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('JesusorausRex'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=JesusorausRex">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=JesusorausRex">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=JesusorausRex">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('JesusorausRex');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-StateDevil87" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20004" alt="StateDevil87"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=StateDevil87'>StateDevil87</a>
+            <div class="fc-gscore-icon">1310</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('StateDevil87'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=StateDevil87">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=StateDevil87">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=StateDevil87">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('StateDevil87');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Bucket0042" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Bucket0042/avatarpic-l.png" alt="Bucket0042"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Bucket0042'>Bucket0042</a>
+            <div class="fc-gscore-icon">1440</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Bucket0042'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Bucket0042">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Bucket0042">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Bucket0042">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Bucket0042');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-stevieweezie" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/stevieweezie/avatarpic-l.png" alt="stevieweezie"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=stevieweezie'>stevieweezie</a>
+            <div class="fc-gscore-icon">3265</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('stevieweezie'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=stevieweezie">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=stevieweezie">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=stevieweezie">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('stevieweezie');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-DarkassasinO07" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.585807ef/tile/0/28000" alt="DarkassasinO07"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=DarkassasinO07'>DarkassasinO07</a>
+            <div class="fc-gscore-icon">25147</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('DarkassasinO07'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=DarkassasinO07">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=DarkassasinO07">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=DarkassasinO07">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('DarkassasinO07');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-TigErWoOdzWiFe" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.41560817/tile/0/28002" alt="TigErWoOdzWiFe"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=TigErWoOdzWiFe'>TigErWoOdzWiFe</a>
+            <div class="fc-gscore-icon">4090</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('TigErWoOdzWiFe'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=TigErWoOdzWiFe">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=TigErWoOdzWiFe">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=TigErWoOdzWiFe">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('TigErWoOdzWiFe');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Hostile Toad" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Hostile%20Toad/avatarpic-l.png" alt="Hostile Toad"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Hostile%20Toad'>Hostile Toad</a>
+            <div class="fc-gscore-icon">26509</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Hostile Toad'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Hostile%20Toad">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Hostile%20Toad">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Hostile%20Toad">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Hostile Toad');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-ManeWairo" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/21031" alt="ManeWairo"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=ManeWairo'>ManeWairo</a>
+            <div class="fc-gscore-icon">21850</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('ManeWairo'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=ManeWairo">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=ManeWairo">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=ManeWairo">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('ManeWairo');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Ze Musiq87" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/2000a" alt="Ze Musiq87"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Ze%20Musiq87'>Ze Musiq87</a>
+            <div class="fc-gscore-icon">385</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Ze Musiq87'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Ze%20Musiq87">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Ze%20Musiq87">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Ze%20Musiq87">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Ze Musiq87');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-DogBoy503" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/DogBoy503/avatarpic-l.png" alt="DogBoy503"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=DogBoy503'>DogBoy503</a>
+            <div class="fc-gscore-icon">11963</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('DogBoy503'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=DogBoy503">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=DogBoy503">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=DogBoy503">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('DogBoy503');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-TREY ZE NiNjA" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.504507d1/tile/0/28051" alt="TREY ZE NiNjA"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=TREY%20ZE%20NiNjA'>TREY ZE NiNjA</a>
+            <div class="fc-gscore-icon">10803</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('TREY ZE NiNjA'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=TREY%20ZE%20NiNjA">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=TREY%20ZE%20NiNjA">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=TREY%20ZE%20NiNjA">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('TREY ZE NiNjA');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-IntentKickazzz" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/IntentKickazzz/avatarpic-l.png" alt="IntentKickazzz"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=IntentKickazzz'>IntentKickazzz</a>
+            <div class="fc-gscore-icon">44543</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('IntentKickazzz'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=IntentKickazzz">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=IntentKickazzz">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=IntentKickazzz">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('IntentKickazzz');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-necromancer926" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/necromancer926/avatarpic-l.png" alt="necromancer926"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=necromancer926'>necromancer926</a>
+            <div class="fc-gscore-icon">885</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('necromancer926'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=necromancer926">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=necromancer926">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=necromancer926">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('necromancer926');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-BDatkillah" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/BDatkillah/avatarpic-l.png" alt="BDatkillah"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=BDatkillah'>BDatkillah</a>
+            <div class="fc-gscore-icon">3573</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('BDatkillah'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=BDatkillah">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=BDatkillah">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=BDatkillah">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('BDatkillah');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Abune" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20006" alt="Abune"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Abune'>Abune</a>
+            <div class="fc-gscore-icon">850</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Abune'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Abune">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Abune">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Abune">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Abune');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-xX CHRiS PwNz" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.585707f9/tile/0/2800d" alt="xX CHRiS PwNz"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=xX%20CHRiS%20PwNz'>xX CHRiS PwNz</a>
+            <div class="fc-gscore-icon">1598</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('xX CHRiS PwNz'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=xX%20CHRiS%20PwNz">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=xX%20CHRiS%20PwNz">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=xX%20CHRiS%20PwNz">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('xX CHRiS PwNz');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Graphiter" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.58410960/tile/0/2000e" alt="Graphiter"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Graphiter'>Graphiter</a>
+            <div class="fc-gscore-icon">30590</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Graphiter'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Graphiter">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Graphiter">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Graphiter">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Graphiter');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-xoxo Geist xoxo" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20006" alt="xoxo Geist xoxo"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=xoxo%20Geist%20xoxo'>xoxo Geist xoxo</a>
+            <div class="fc-gscore-icon">1075</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('xoxo Geist xoxo'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=xoxo%20Geist%20xoxo">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=xoxo%20Geist%20xoxo">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=xoxo%20Geist%20xoxo">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('xoxo Geist xoxo');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-GEBAUER POWER" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/GEBAUER%20POWER/avatarpic-l.png" alt="GEBAUER POWER"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=GEBAUER%20POWER'>GEBAUER POWER</a>
+            <div class="fc-gscore-icon">18109</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('GEBAUER POWER'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=GEBAUER%20POWER">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=GEBAUER%20POWER">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=GEBAUER%20POWER">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('GEBAUER POWER');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-iGenocidez" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.585708da/tile/0/2040a" alt="iGenocidez"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=iGenocidez'>iGenocidez</a>
+            <div class="fc-gscore-icon">1395</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('iGenocidez'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=iGenocidez">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=iGenocidez">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=iGenocidez">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('iGenocidez');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-St33nkyCh33ze" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20004" alt="St33nkyCh33ze"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=St33nkyCh33ze'>St33nkyCh33ze</a>
+            <div class="fc-gscore-icon">655</div>
+        </div>
+        <div class="fc-presence-text">Last seen 23 hours ago playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('St33nkyCh33ze'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=St33nkyCh33ze">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=St33nkyCh33ze">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=St33nkyCh33ze">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('St33nkyCh33ze');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-That Guy98" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/21016" alt="That Guy98"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=That%20Guy98'>That Guy98</a>
+            <div class="fc-gscore-icon">11145</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('That Guy98'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=That%20Guy98">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=That%20Guy98">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=That%20Guy98">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('That Guy98');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Mi2elRey" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Mi2elRey/avatarpic-l.png" alt="Mi2elRey"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Mi2elRey'>Mi2elRey</a>
+            <div class="fc-gscore-icon">11564</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Mi2elRey'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Mi2elRey">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Mi2elRey">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Mi2elRey">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Mi2elRey');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Dath eagle" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/Dath%20eagle/avatarpic-l.png" alt="Dath eagle"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Dath%20eagle'>Dath eagle</a>
+            <div class="fc-gscore-icon">2505</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Dath eagle'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Dath%20eagle">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Dath%20eagle">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Dath%20eagle">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Dath eagle');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Suicide Sizzle" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20008" alt="Suicide Sizzle"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Suicide%20Sizzle'>Suicide Sizzle</a>
+            <div class="fc-gscore-icon">4470</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Suicide Sizzle'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Suicide%20Sizzle">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Suicide%20Sizzle">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Suicide%20Sizzle">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Suicide Sizzle');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-xMister Niceguy" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/xMister%20Niceguy/avatarpic-l.png" alt="xMister Niceguy"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=xMister%20Niceguy'>xMister Niceguy</a>
+            <div class="fc-gscore-icon">780</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('xMister Niceguy'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=xMister%20Niceguy">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=xMister%20Niceguy">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=xMister%20Niceguy">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('xMister Niceguy');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-WhoDatLayinPipe" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/WhoDatLayinPipe/avatarpic-l.png" alt="WhoDatLayinPipe"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=WhoDatLayinPipe'>WhoDatLayinPipe</a>
+            <div class="fc-gscore-icon">14492</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('WhoDatLayinPipe'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=WhoDatLayinPipe">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=WhoDatLayinPipe">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=WhoDatLayinPipe">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('WhoDatLayinPipe');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Capnlongwang" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20008" alt="Capnlongwang"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Capnlongwang'>Capnlongwang</a>
+            <div class="fc-gscore-icon">6765</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Capnlongwang'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Capnlongwang">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Capnlongwang">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Capnlongwang">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Capnlongwang');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-vanish K20" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/vanish%20K20/avatarpic-l.png" alt="vanish K20"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=vanish%20K20'>vanish K20</a>
+            <div class="fc-gscore-icon">1713</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('vanish K20'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=vanish%20K20">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=vanish%20K20">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=vanish%20K20">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('vanish K20');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-xXxPaLiDiNxXx" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.454108c6/tile/0/28006" alt="xXxPaLiDiNxXx"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=xXxPaLiDiNxXx'>xXxPaLiDiNxXx</a>
+            <div class="fc-gscore-icon">15455</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('xXxPaLiDiNxXx'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=xXxPaLiDiNxXx">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=xXxPaLiDiNxXx">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=xXxPaLiDiNxXx">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('xXxPaLiDiNxXx');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-fers2k2" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/fers2k2/avatarpic-l.png" alt="fers2k2"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=fers2k2'>fers2k2</a>
+            <div class="fc-gscore-icon">10605</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('fers2k2'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=fers2k2">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=fers2k2">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=fers2k2">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('fers2k2');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-xXxZV6661xXx" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.585708d6/tile/0/20401" alt="xXxZV6661xXx"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=xXxZV6661xXx'>xXxZV6661xXx</a>
+            <div class="fc-gscore-icon">22632</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('xXxZV6661xXx'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=xXxZV6661xXx">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=xXxZV6661xXx">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=xXxZV6661xXx">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('xXxZV6661xXx');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-aDONORwithAIDS" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/aDONORwithAIDS/avatarpic-l.png" alt="aDONORwithAIDS"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=aDONORwithAIDS'>aDONORwithAIDS</a>
+            <div class="fc-gscore-icon">18097</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('aDONORwithAIDS'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=aDONORwithAIDS">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=aDONORwithAIDS">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=aDONORwithAIDS">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('aDONORwithAIDS');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-HECK2D2" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/HECK2D2/avatarpic-l.png" alt="HECK2D2"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=HECK2D2'>HECK2D2</a>
+            <div class="fc-gscore-icon">9203</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('HECK2D2'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=HECK2D2">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=HECK2D2">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=HECK2D2">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('HECK2D2');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-Foxysideburns" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/2000a" alt="Foxysideburns"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=Foxysideburns'>Foxysideburns</a>
+            <div class="fc-gscore-icon">11198</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('Foxysideburns'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=Foxysideburns">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=Foxysideburns">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=Foxysideburns">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('Foxysideburns');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-VETERANGTHUG2" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://avatar.xboxlive.com/avatar/VETERANGTHUG2/avatarpic-l.png" alt="VETERANGTHUG2"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=VETERANGTHUG2'>VETERANGTHUG2</a>
+            <div class="fc-gscore-icon">8050</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('VETERANGTHUG2'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=VETERANGTHUG2">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=VETERANGTHUG2">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=VETERANGTHUG2">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('VETERANGTHUG2');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-CanadianBaconVI" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20001" alt="CanadianBaconVI"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=CanadianBaconVI'>CanadianBaconVI</a>
+            <div class="fc-gscore-icon">809</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('CanadianBaconVI'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=CanadianBaconVI">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=CanadianBaconVI">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=CanadianBaconVI">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('CanadianBaconVI');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-WhoDatSuckNazz" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20004" alt="WhoDatSuckNazz"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=WhoDatSuckNazz'>WhoDatSuckNazz</a>
+            <div class="fc-gscore-icon">15910</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('WhoDatSuckNazz'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=WhoDatSuckNazz">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=WhoDatSuckNazz">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=WhoDatSuckNazz">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('WhoDatSuckNazz');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-I Hilltopper I" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.454107e8/tile/0/28036" alt="I Hilltopper I"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=I%20Hilltopper%20I'>I Hilltopper I</a>
+            <div class="fc-gscore-icon">22289</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('I Hilltopper I'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=I%20Hilltopper%20I">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=I%20Hilltopper%20I">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=I%20Hilltopper%20I">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('I Hilltopper I');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+<dd id="fc-gtag-BingBIangBIaow" class="fc-content-panel fc-friend">
+    <div class="fc-pic">
+        <img src="http://image.xboxlive.com/global/t.fffe07d1/tile/0/20007" alt="BingBIangBIaow"/>
+    </div>
+    <div class="fc-stats">
+        <div class="fc-gtag">
+            <a class="fc-gtag-link" href='/en-US/MyXbox/Profile?gamertag=BingBIangBIaow'>BingBIangBIaow</a>
+            <div class="fc-gscore-icon">2470</div>
+        </div>
+        <div class="fc-presence-text">Last seen 2/4/2011 playing Halo: Reach</div>
+    </div>
+    <div class="fc-actions">
+        <div class="fc-icon-actions">
+            <div class="fc-block">
+                <span class="fc-buttonlabel">Block User</span>
+                <a href="#" class="fc-blockbutton" onclick="return FriendCenter.BlockFriend('BingBIangBIaow'); return false;"></a>
+            </div>
+        </div>
+        <div class="fc-text-actions">
+            <div class="fc-action">&nbsp;</div>
+            <span class="fc-action">
+                <a href="/en-US/MyXbox/Profile?gamertag=BingBIangBIaow">View Profile</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/GameCenter?compareTo=BingBIangBIaow">Compare Games</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="/en-US/MessageCenter/Compose?gamertag=BingBIangBIaow">Send Message</a>
+            </span>
+            <span class="separator-icon">|</span>
+            <span class="fc-action">
+                <a href="#" onclick="return FriendCenter.AddFriend('BingBIangBIaow');">Send Friend Request</a>
+            </span>
+        </div>
+    </div>
+</dd>
+</dl>
+
+        </div>
+    </div>
+<script type="text/javascript" language="javascript">//<![CDATA[
+
+        $(function() {
+            bindButtonStyleStates('.fc-blockbutton', 'fc-blockbutton');
+        });
+//]]></script>
+
+
+
+        </div>
+        <div id="BodyFooter" class="container">
+            
+
+<div id="ShellFooterContent">
+    <div class="PrimaryContent">
+        <div id="ShellRightContentArea">
+            
+        </div>
+        <div id="ShellFooterNavigation">
+            <a href="http://www.xbox.com:80/en-US/support/" class="SupportLink">Support</a><a href="http://www.xbox.com:80/en-US/press" class="spread">Press</a><a href="http://www.xbox.com:80/en-US/community/developer" class="spread">For Developers</a><a href="http://www.gamesforwindows.com" class="spread">Games for Windows</a><a href="http://www.microsoft-entertainment-jobs.com" class="spread">Jobs</a><a href="http://mymfe.microsoft.com/Xbox.com/Feedback.aspx?formID=43" class="spread">Feedback</a>    
+        </div>
+        <div id="ShellLeftContentArea">
+                
+        </div>
+    </div>
+    <div class="SecondaryContent">
+        <div id="LogoAndCopyright">&#169; 2010 Microsoft</div>
+        <div id="ShellFooterSecondaryNavigation">
+            <a href="http://go.microsoft.com/fwlink/?LinkId=81184">Privacy Statement</a><a href="http://www.xbox.com:80/en-US/legal/xboxComTOU" class="spread">Xbox.com Terms of Use</a><a href="http://www.xbox.com:80/en-US/legal/codeofconduct" class="spread">Code of Conduct</a><a href="http://g.msn.com/AIPRIV/en-us" class="spread">About Our Ads</a>
+        </div>
+    </div>
+</div>
+
+        </div>
+        
+    
+
+    </div>
+
+    <!-- SiteCatalyst code version: H.16.  Copyright 1996-2010 Adobe, Inc. More info available at http://www.omniture.com -->
+<script type="text/javascript">//<![CDATA[
+var s_account="msxboxcomenUS";t_account="msxboxcomv2enusdev"
+//]]></script>
+<script type="text/javascript" src="/Shell/js/s_code.js"></script>
+<script type="text/javascript">//<![CDATA[
+s.pageName='live\x2ffriendcenter\x2frecentplayers';s.events='event1';s.channel='myxbox';s.prop1='friendcenter';s.prop2='en-us';s.eVar1='en-us';
+ var extendedReferrer = s.getQueryParam('xr').toLowerCase();
+ if (extendedReferrer.length > 0) { s.prop9 = extendedReferrer; }
+ s.trackingServer="o.xbox.com";
+s.trackingServerSecure="s.xbox.com";
+s.trackInlineStats=false;
+var s_code=s.t();if(s_code) document.write(s_code);
+//]]></script>
+<noscript><a href="o.xbox.com" title="Web Analytics"><img src="http://o.xbox.com/b/ss/msxboxcomenUS/1/H.16--NS/0" height="1" width="1" border="0" alt="" /></a></noscript><!--/DO NOT REMOVE/--><!-- End SiteCatalyst code version: H.16. -->
+</body>
+</html>
